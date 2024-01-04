@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import (
-    ProductViewSet, CartViewSet, CartItemViewSet
+    ProductViewSet, CartViewSet, CartItemViewSet, OrderViewSet
 )
 
 
@@ -15,6 +15,9 @@ cart_item_delete = CartItemViewSet.as_view({'delete': 'destroy'})
 cart_item_update = CartItemViewSet.as_view({'put': 'update'})
 cart_item_bulk_add = CartItemViewSet.as_view({'post': 'add_multiple_to_cart'})
 
+order_place = OrderViewSet.as_view({'post': 'place_order'})
+
+
 urlpatterns = [
     path('auth/', include('rest_framework.urls')),
     
@@ -27,6 +30,8 @@ urlpatterns = [
     path('cart/item/add/', cart_item_create, name='cart-add'),
     path('cart/item/<item_id>/delete', cart_item_delete, name='cart-item-delete'),
     path('cart/item/bulk', cart_item_bulk_add, name='cart-item-bulk-add'),
+    
+    path('order/place',order_place, name='order-place')
 
    
 ]

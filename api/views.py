@@ -2,9 +2,10 @@ from django.shortcuts import render
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Product, Cart, CartItem, Order
+from .models import Product, Cart, CartItem, Order, OrderItem
 from .serializers import ProductSerializer, CartSerializer, OrderSerializer, CartItemSerializer, OrderItemSerializer
 from rest_framework.permissions import AllowAny
+from django.db import transaction
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
@@ -206,4 +207,54 @@ class CartItemViewSet(ModelViewSet):
         response_data["cart"] = self.format_cart_data(cart_serializer.data)
         return Response(response_data, status=status.HTTP_200_OK)
 
+    
+class OrderViewSet(ModelViewSet):
+    
+    def place_order(self, request):
+        cart_id = request.data.get('cart_id')
+        delivery_date_time = request.data.get('delivery_date_time')
+        name = request.data.get('name')
+        address = request.data.get('address')
+        email = request.data.get('email')
+        
+        try:
+            cart = Cart.objects.get(cart_id=cart_id)
+            cart_items = CartItem.objects.filter(cart=cart)
+        except Cart.DoesNotExist:
+            return Response({"message": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        with transaction.atomic(): # Start a database transaction
+            try:
+                order = Order.objects.create(
+                    user = request.user.id if request.user.is_authenticated else None,
+                    delivery_date_time=delivery_date_time,
+                    name=name,
+                    address=address,
+                    email =email
+                )
+                
+                for cart_item in cart_items:
+                    product = cart_item.product
+                    quantity = cart_item.quantity
+                    
+                    if product.quantity < quantity:
+                        raise Exception(f"Product {product.name} has insufficient quantity")
+                    
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=quantity
+                    )
+                    
+                    product.quantity -= quantity
+                    product.save()
+                    
+                    # Clear cart after successful order place
+                    cart_items.delete()
+                
+                return Response({"message": "Order placed successfully"}, status=status.HTTP_201_CREATED)
+            
+            except Exception as e:
+                transaction.set_rollback(True)
+                return Response({"message": f"Order placement failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
     
