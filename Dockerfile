@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy our codebase into the container
 COPY . .
 
-# RUN ./manage.py makemigrations
+RUN ./manage.py makemigrations
 RUN ./manage.py migrate
 RUN ./manage.py create_admin
 
