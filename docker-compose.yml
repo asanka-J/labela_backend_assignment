@@ -7,8 +7,8 @@ services:
       POSTGRES_USER: demo
       POSTGRES_PASSWORD: demo@123
       POSTGRES_DB: demo_db
-    volumes:
-      - ./data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./data:/var/lib/postgresql/data
     ports:
       - 5432:5432
   web:
