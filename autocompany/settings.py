@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
-    'core',
     
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    "allauth",
+    "allauth.account",
 ]
 
 MIDDLEWARE = [
@@ -92,7 +94,7 @@ DATABASES = {
         'NAME': 'demo_db',
         'USER': 'demo',
         'PASSWORD': 'demo@123',
-        'HOST': 'db', 
+        'HOST': 'localhost', 
         'PORT': '5432',
     }
 }
@@ -141,3 +143,12 @@ STATIC_ROOT = f'{BASE_DIR}/static'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# APPEND_SLASH = False
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ]
+}
+
+SITE_ID = 1 
