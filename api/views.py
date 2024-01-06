@@ -106,10 +106,10 @@ class CartItemViewSet(ModelViewSet):
             except Product.DoesNotExist:
                 return Response({"message": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
             
-            cart_item = CartItem.objects.get(cart=cart, product=product)
-            if cart_item:
+            try:
+                cart_item = CartItem.objects.get(cart=cart, product=product)
                 cart_item.quantity += quantity
-            else:
+            except CartItem.DoesNotExist:
                 cart_item = CartItem.objects.create(cart=cart, product=product,quantity=quantity)
             cart_item.save()
 
@@ -120,9 +120,10 @@ class CartItemViewSet(ModelViewSet):
         else:
             return Response({"message": "Cart ID not provided"}, status=status.HTTP_400_BAD_REQUEST)
     
-    def update(self, request, item_id=None):
+    def update(self, request, pk=None):
         cart_id = request.data.get('cart_id')
         quantity = request.data.get('quantity')
+        
         if cart_id:
             try:
                 cart = Cart.objects.get(cart_id=cart_id)
@@ -130,7 +131,7 @@ class CartItemViewSet(ModelViewSet):
                 return Response({"message": "Invalid Cart id"}, status=status.HTTP_404_NOT_FOUND)
         
             try:
-                cart_item = CartItem.objects.get(pk=item_id, cart=cart)
+                cart_item = CartItem.objects.get(pk=pk, cart=cart)
             except CartItem.DoesNotExist:
                 return Response({"message": "Cart item not found"}, status=status.HTTP_404_NOT_FOUND)   
                      
@@ -148,19 +149,17 @@ class CartItemViewSet(ModelViewSet):
             cart_serializer = CartSerializer(cart_item.cart)
         return Response(self.format_cart_data(cart_serializer.data), status=status.HTTP_200_OK)
         
-    def destroy(self, request, item_id=None):
+    def destroy(self, request, pk=None):
         cart_id = request.data.get('cart_id')
         
         if cart_id:
             try:
                 cart = Cart.objects.get(cart_id=cart_id)
-            except Cart.DoesNotExist:
-                return Response({"message": "Invalid Cart id"}, status=status.HTTP_404_NOT_FOUND)
-            
-            try:
-                cart_item = CartItem.objects.get(pk=item_id, cart=cart)
+                cart_item = CartItem.objects.get(pk=pk, cart=cart)
                 cart_item.delete()
                 return Response({"message": "Product removed"}, status=status.HTTP_204_NO_CONTENT)
+            except Cart.DoesNotExist:
+                return Response({"message": "Invalid Cart item id"}, status=status.HTTP_404_NOT_FOUND)
             except CartItem.DoesNotExist:
                 return Response({"message": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
         
@@ -210,6 +209,10 @@ class CartItemViewSet(ModelViewSet):
     
 class OrderViewSet(ModelViewSet):
     
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    
+    
     def place_order(self, request):
         cart_id = request.data.get('cart_id')
         delivery_date_time = request.data.get('delivery_date_time')
@@ -258,3 +261,26 @@ class OrderViewSet(ModelViewSet):
                 transaction.set_rollback(True)
                 return Response({"message": f"Order placement failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
     
+    @staticmethod
+    def format_order_data(order_data):
+        order_id = order_data.get('id')
+        order_items = OrderItem.objects.filter(order=order_id)
+        order_items_serializer = OrderItemSerializer(order_items, many=True)
+        data = order_data
+        data['order_items'] = order_items_serializer.data
+        return data
+        
+        
+    def get(self, request, pk=None):
+        response_data = {}
+
+        try:
+            order = Order.objects.get(id=pk)
+            serializer = self.get_serializer(order)
+            response_data["message"] = "Order found"
+            response_data["order"] = self.format_order_data(serializer.data)
+            return Response(response_data, status=status.HTTP_200_OK)
+                
+        except Order.DoesNotExist:
+            return Response({"message": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+             
