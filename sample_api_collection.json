@@ -1,0 +1,466 @@
+{
+	"info": {
+		"_postman_id": "11814128-8391-4b5d-a236-2592fbc8c485",
+		"name": "Stekz Assessment API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1946953"
+	},
+	"item": [
+		{
+			"name": "User - login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const token = pm.response.json().key;",
+							"pm.environment.unset(\"token\");",
+							"pm.collectionVariables.set(\"token\", token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"demo@123\"\n   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User - logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.unset(\"token\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"demo@123\"\n   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product- create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Product 6\",\n    \"description\": \"Product 6 Description\",\n    \"price\": 300.00,\n    \"quantity\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product- update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Product 2 updated name\",\n    \"description\":\"Product 2 updated description\",\n    \"quantity\": 200,\n    \"price\": 400\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/products/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - get or create - guest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/cart",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - get or create  - user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token  {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/cart",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - get with cart_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/cart?cart_id=G-00004",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart"
+					],
+					"query": [
+						{
+							"key": "cart_id",
+							"value": "G-00004"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - get cart with cart_id- loggedin user",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token  {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/cart?cart_id=G-00004",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart"
+					],
+					"query": [
+						{
+							"key": "cart_id",
+							"value": "G-00004"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - add item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cart_id\": \"U-00003\",\n    \"product\": {\n        \"id\":3,\n        \"quantity\":10\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/cart/items",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart",
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - update item",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cart_id\":\"U-00003\",\n    \"quantity\" : 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/cart/items/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart",
+						"items",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart - delete item",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cart_id\":\"U-00003\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/cart/items/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"cart",
+						"items",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Place order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cart_id\": \"U-00003\",\n    \"delivery_date_time\": \"2024-01-10T14:30:00\",\n    \"name\": \"John Doe\",\n    \"address\": \"123 Main Street, Colombo\",\n    \"email\" : \"asanka@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Orders - list",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}orders",
+					"host": [
+						"{{base_url}}orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Orders - detail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/orders/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost:8001/api/",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
