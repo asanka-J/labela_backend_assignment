@@ -1,57 +1,58 @@
-# Assignment
+**Label A Backend Assignment**
 
-Oh, hello!
----------
-First of all, awesome that you want to join our team! We already know that you're a cool person, but now we just want to know if you're a cool coder as well! To that end we've set up a basic exercise for you to complete.
+**Project Overview**
 
-**Our tech stack!**
+Backend solution for a company specialised in car parts wants to modernise their company, and start selling their parts online. 
 
-Before we start off, let me elaborate about our tech stack. For most projects, we use the following technologies:
+**Running the Project**
 
-* Python, for rapid development
-* Relational database, we mostly use PostgreSQL 
-* Widely accepted frameworks, we mostly use the Django Framework
-* Database ORM, because using a standard is faster and more secure (default provided by Django)
+*Clone the Repository*
 
-The assignment
----------
-A company specialised in car parts wants to modernise their company, and start selling their parts online. Being the pro car salesmen that they are, they decided to develop the front-end via another agency. They entrust the back-end to none other than Label A.
+- git clone https://github.com/asanka-J/labela_backend_assignment.git
+- cd labela_backend_assignment
 
-After some initial research, we've defined the following user stories on top of our backlog:
+*Build and Run Docker Compose*
 
-* As a company, I want all my products in a database, so I can offer them via our new platform to customers
-* As a client, I want to add a product to my shopping cart, so I can order it at a later stage
-* As a client, I want to remove a product from my shopping cart, so I can tailor the order to what I actually need
-* As a client, I want to order the current contents in my shopping cart, so I can receive the products I need to repair my car
-* As a client, I want to select a delivery date and time, so I will be there to receive the order
-* As a client, I want to see an overview of all the products, so I can choose which product I want
-* As a client, I want to view the details of a product, so I can see if the product satisfies my needs
+- sudo docker-compose up -d --build
 
-Develop an API according to the user stories defined above. You should not spend more than 8 hours on this exercise, so put on your MVP glasses and prioritise according to what you think the product should minimally entail.
+*Applying Initial Configurations and Running Migrations*
 
-Included in this repository:
+- docker-compose exec web python manage.py init_project
+- init_project creates accounts for the backend admin and a guest user. You can use the following credentials to test the application
 
-* A freshly installed Django Framework (with not admin user -> go to this page to see how to create one: https://docs.djangoproject.com/en/1.8/intro/tutorial02/)
-* For convenience you can use .sqllite which is already configured in the project instead of PostgreSQL
-* Bonus points if you can include PostgreSQL in a Docker setup -> base Dockerfile is included
+-- Admin Account:
 
-We can make the following assumptions:
+    Username: admin Password: demo@123
+-- Guest Account:
 
-* We don't have to worry about the front-end, but should think of a data format a JavaScript application can handle
-* We don't need to worry about the payment of the order. Who needs money anyway?
-
-How to score bonus points (ergo: we really advise you to tackle it this way):
-
-* Implement a RESTful API
-* Use a ORM
-* Document how we can set up and instantiate the project, so we can easily test it functionally
-
-If you have any questions, feel free to contact us! Any feedback on this exercise is always welcome!
+    Username: demo_guest Password: demo@123
+Feel free to log in using these credentials to test the functionality and access various features of the application.
 
 
-**Want to run the project in Docker?**
+*Accessing the Application*
 
-- ```docker build -t autocompany .```
-- ``` docker run -p 80:80 -d autocompany```
-- Navigate to ```http://127.0.0.1/```
+Open your web browser and navigate to http://127.0.0.1:8000
 
+**Testing**
+
+To run the provided test cases for the API endpoints, execute:
+
+- python manage.py test api
+
+**Planned Next Steps**
+
+- **Cart Ownership Transition:** Implement logic for transitioning cart ownership upon guest registration.
+- **Configuration Setup:** Establish separate configurations for production, development, and local environments.
+- **User Registration and Authentication:** Implement user registration and authentication functionalities.
+- **Frontend Integration:** Integrate the backend API with the frontend developed by the agency.
+
+**Sample API Postman Collection**
+
+Find a collection of sample API requests in `sample_api_collection.json` file within the repository. Use Postman to import and explore these sample requests.
+
+**Bonus Points Achieved**
+
+- RESTful API implementation
+- Utilization of Django ORM
+- Docker setup included for PostgreSQL
+ 
