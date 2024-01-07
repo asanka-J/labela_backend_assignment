@@ -14,8 +14,14 @@ class Command(BaseCommand):
         
         
         if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser('admin', 'admin@demo.com', 'demo@123')
+            User.objects.create_superuser(username='admin', email='admin@demo.com', password='demo@123')
             self.stdout.write(self.style.SUCCESS('Admin account created successfully'))
         else:
             self.stdout.write(self.style.ERROR('Admin account already exists'))
+            
+        if not User.objects.filter(username='demo_guest').exists():
+            User.objects.create_user(username='demo_guest', email='demo_guest@demo.com', password='demo@123')
+            self.stdout.write(self.style.SUCCESS('Demo guest account created successfully'))
+        else:
+            self.stdout.write(self.style.ERROR('Demo guest account already exists'))
             
