@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.db import transaction
 
 from rest_framework.pagination import PageNumberPagination
+from .utils import format_cart_data
 
 class CustomPagination(PageNumberPagination):
     page_size = 5 
@@ -23,17 +24,7 @@ class ProductViewSet(ModelViewSet):
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    
-    @staticmethod
-    def format_cart_data(cart_data):
-        cart_id = cart_data.get('id')
-        cart_items = CartItem.objects.filter(cart=cart_id)
-        cart_items_serializer = CartItemSerializer(cart_items, many=True)
-        data = cart_data
-        data['cart_items'] = cart_items_serializer.data
-        return data
-        
-        
+            
     def get(self, request, *args, **kwargs):
         cart_id = request.query_params.get('cart_id')
         response_data = {}
@@ -45,12 +36,12 @@ class CartViewSet(ModelViewSet):
                     if cart.user == request.user: # If the cart is associated with the user
                         serializer = self.get_serializer(cart)
                         response_data["message"] = "Cart found"
-                        response_data["cart"] = self.format_cart_data(serializer.data)
+                        response_data["cart"] = format_cart_data(serializer.data)
                         return Response(response_data, status=status.HTTP_200_OK)
                 else:   # If the cart is not associated with a user
                     serializer = self.get_serializer(cart)
                     response_data["message"] = "Guest cart found"
-                    response_data["cart"] = self.format_cart_data(serializer.data)
+                    response_data["cart"] = format_cart_data(serializer.data)
                     return Response(response_data, status=status.HTTP_200_OK)
                     
                 return Response({"message": "Unauthorized access to cart"}, status=status.HTTP_403_FORBIDDEN)
@@ -62,36 +53,25 @@ class CartViewSet(ModelViewSet):
             if existing_cart:
                 serializer = self.get_serializer(existing_cart)
                 response_data["message"] = "Cart already exists"
-                response_data["cart"] = self.format_cart_data(serializer.data)
+                response_data["cart"] = format_cart_data(serializer.data)
                 return Response(response_data, status=status.HTTP_200_OK)
 
             cart = Cart.objects.create(user=request.user)
             serializer = self.get_serializer(cart)
             response_data["message"] = "Cart created successfully"
-            response_data["cart"] = self.format_cart_data(serializer.data)
+            response_data["cart"] = format_cart_data(serializer.data)
             return Response(response_data, status=status.HTTP_201_CREATED)
         else:
             cart = Cart.objects.create()
             serializer = self.get_serializer(cart)
             response_data["message"] = "Cart created successfully"
-            response_data["cart"] = self.format_cart_data(serializer.data)
+            response_data["cart"] = format_cart_data(serializer.data)
             return Response(response_data, status=status.HTTP_201_CREATED)
         
-
-
 class CartItemViewSet(ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
-    
-    @staticmethod
-    def format_cart_data(cart_data):
-        cart_id = cart_data.get('id')
-        cart_items = CartItem.objects.filter(cart=cart_id)
-        cart_items_serializer = CartItemSerializer(cart_items, many=True)
-        data = cart_data
-        data['cart_items'] = cart_items_serializer.data
-        return data
-    
+        
     def create(self, request):
         cart_id = request.data.get('cart_id')
         product_data = request.data.get('product') 
@@ -123,7 +103,7 @@ class CartItemViewSet(ModelViewSet):
 
             cart_serializer = CartSerializer(cart)
             response_data["message"] = "Product added to the cart"
-            response_data["cart"] = self.format_cart_data(cart_serializer.data)
+            response_data["cart"] = format_cart_data(cart_serializer.data)
             return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Cart ID not provided"}, status=status.HTTP_400_BAD_REQUEST)
@@ -135,11 +115,9 @@ class CartItemViewSet(ModelViewSet):
         if cart_id:
             try:
                 cart = Cart.objects.get(cart_id=cart_id)
+                cart_item = CartItem.objects.get(pk=pk, cart=cart)
             except Cart.DoesNotExist:
                 return Response({"message": "Invalid Cart id"}, status=status.HTTP_404_NOT_FOUND)
-        
-            try:
-                cart_item = CartItem.objects.get(pk=pk, cart=cart)
             except CartItem.DoesNotExist:
                 return Response({"message": "Cart item not found"}, status=status.HTTP_404_NOT_FOUND)   
                      
@@ -155,7 +133,7 @@ class CartItemViewSet(ModelViewSet):
                 return Response({"message": "Quantity not provided"}, status=status.HTTP_400_BAD_REQUEST)
 
             cart_serializer = CartSerializer(cart_item.cart)
-        return Response(self.format_cart_data(cart_serializer.data), status=status.HTTP_200_OK)
+            return Response(format_cart_data(cart_serializer.data), status=status.HTTP_200_OK)
         
     def destroy(self, request, pk=None):
         cart_id = request.data.get('cart_id')
@@ -211,7 +189,7 @@ class CartItemViewSet(ModelViewSet):
 
         cart_serializer = CartSerializer(cart)
         response_data["message"] = "Product added to the cart"
-        response_data["cart"] = self.format_cart_data(cart_serializer.data)
+        response_data["cart"] = format_cart_data(cart_serializer.data)
         return Response(response_data, status=status.HTTP_200_OK)
 
     
