@@ -34,7 +34,6 @@ urlpatterns = [
     path('orders',order_view_set, name='order-place'),
     path('orders/<int:pk>', order_detail, name='order-detail'),
     
-  
 ]
 
 

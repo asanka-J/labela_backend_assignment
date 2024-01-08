@@ -7,10 +7,18 @@ from .serializers import ProductSerializer, CartSerializer, OrderSerializer, Car
 from rest_framework.permissions import AllowAny
 from django.db import transaction
 
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPagination(PageNumberPagination):
+    page_size = 5 
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+    pagination_class = CustomPagination
 
 class CartViewSet(ModelViewSet):
     queryset = Cart.objects.all()
