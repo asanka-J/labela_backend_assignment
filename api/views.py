@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.db import transaction
 
 from rest_framework.pagination import PageNumberPagination
-from .utils import format_cart_data
+from .utils import format_cart_data,format_order_data
 
 class CustomPagination(PageNumberPagination):
     page_size = 5 
@@ -246,16 +246,7 @@ class OrderViewSet(ModelViewSet):
             except Exception as e:
                 transaction.set_rollback(True)
                 return Response({"message": f"Order placement failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
-    
-    @staticmethod
-    def format_order_data(order_data):
-        order_id = order_data.get('id')
-        order_items = OrderItem.objects.filter(order=order_id)
-        order_items_serializer = OrderItemSerializer(order_items, many=True)
-        data = order_data
-        data['order_items'] = order_items_serializer.data
-        return data
-        
+
         
     def get(self, request, pk=None):
         response_data = {}
@@ -264,7 +255,7 @@ class OrderViewSet(ModelViewSet):
             order = Order.objects.get(id=pk)
             serializer = self.get_serializer(order)
             response_data["message"] = "Order found"
-            response_data["order"] = self.format_order_data(serializer.data)
+            response_data["order"] = format_order_data(serializer.data)
             return Response(response_data, status=status.HTTP_200_OK)
                 
         except Order.DoesNotExist:
