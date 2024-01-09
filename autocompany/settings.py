@@ -23,6 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'autocompany',
     'api',
+    'cart',
+    'product',
+    'order',
     
     'rest_framework',
     'rest_framework.authtoken',
@@ -127,7 +130,7 @@ STATIC_ROOT = f'{BASE_DIR}/static'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-APPEND_SLASH = False
+# APPEND_SLASH = False
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
