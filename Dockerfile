@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Copy .env-sample as .env
-COPY .env-sample .env
+COPY env_sample ./.env
 
 # RUN ./manage.py makemigrations
 # RUN ./manage.py migrate
