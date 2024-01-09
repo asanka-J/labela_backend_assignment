@@ -88,12 +88,18 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/products",
+					"raw": "{{base_url}}/products?page=1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
 					]
 				}
 			},
@@ -124,7 +130,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Product 6\",\n    \"description\": \"Product 6 Description\",\n    \"price\": 300.00,\n    \"quantity\": 20\n}",
+					"raw": "{\n    \"name\": \"Product 5\",\n    \"description\": \"Product 5 Description\",\n    \"price\": 300.00,\n    \"quantity\": 20\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -132,12 +138,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/products",
+					"raw": "{{base_url}}/products/",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"products"
+						"products",
+						""
 					]
 				}
 			},
@@ -189,6 +196,19 @@
 		},
 		{
 			"name": "Cart - get or create  - user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const cart = pm.response.json().cart;",
+							"pm.environment.unset(\"user_cart_id\");",
+							"pm.collectionVariables.set(\"user_cart_id\", cart.cart_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -219,7 +239,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/cart?cart_id=G-00004",
+					"raw": "{{base_url}}/cart?cart_id=G-00001",
 					"host": [
 						"{{base_url}}"
 					],
@@ -229,7 +249,7 @@
 					"query": [
 						{
 							"key": "cart_id",
-							"value": "G-00004"
+							"value": "G-00001"
 						}
 					]
 				}
@@ -248,7 +268,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{base_url}}/cart?cart_id=G-00004",
+					"raw": "{{base_url}}/cart?cart_id={{user_cart_id}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -258,7 +278,7 @@
 					"query": [
 						{
 							"key": "cart_id",
-							"value": "G-00004"
+							"value": "{{user_cart_id}}"
 						}
 					]
 				}
@@ -272,7 +292,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"cart_id\": \"U-00003\",\n    \"product\": {\n        \"id\":3,\n        \"quantity\":10\n    }\n}",
+					"raw": "{\n    \"cart_id\": \"{{user_cart_id}}\",\n    \"product\": {\n        \"id\":1,\n        \"quantity\":20\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -280,13 +300,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/cart/items",
+					"raw": "{{base_url}}/cart/items/",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"cart",
-						"items"
+						"items",
+						""
 					]
 				}
 			},
@@ -299,7 +320,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"cart_id\":\"U-00003\",\n    \"quantity\" : 5\n}",
+					"raw": "{\n    \"cart_id\":\"{{user_cart_id}}\",\n    \"quantity\" : 5\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -327,7 +348,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"cart_id\":\"U-00003\"\n}",
+					"raw": "{\n    \"cart_id\":\"{{user_cart_id}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -335,14 +356,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/cart/items/2",
+					"raw": "{{base_url}}/cart/items/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"cart",
 						"items",
-						"2"
+						"1"
 					]
 				}
 			},
@@ -355,7 +376,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"cart_id\": \"U-00003\",\n    \"delivery_date_time\": \"2024-01-10T14:30:00\",\n    \"name\": \"John Doe\",\n    \"address\": \"123 Main Street, Colombo\",\n    \"email\" : \"asanka@gmail.com\"\n}",
+					"raw": "{\n    \"cart_id\": \"{{user_cart_id}}\",\n    \"delivery_date_time\": \"2024-01-10T14:30:00\",\n    \"name\": \"John Doe\",\n    \"address\": \"123 Main Street, Colombo\",\n    \"email\" : \"asanka@gmail.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -363,12 +384,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/order",
+					"raw": "{{base_url}}/orders/",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"order"
+						"orders",
+						""
 					]
 				}
 			},
@@ -392,9 +414,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}orders",
+					"raw": "{{base_url}}/orders",
 					"host": [
-						"{{base_url}}orders"
+						"{{base_url}}"
+					],
+					"path": [
+						"orders"
 					]
 				}
 			},
@@ -418,13 +443,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/orders/2",
+					"raw": "{{base_url}}/orders/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"orders",
-						"2"
+						"1"
 					]
 				}
 			},
@@ -454,13 +479,17 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "localhost:8001/api/",
+			"value": "localhost:8000/api",
 			"type": "string"
 		},
 		{
 			"key": "token",
 			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "user_cart_id",
+			"value": ""
 		}
 	]
 }

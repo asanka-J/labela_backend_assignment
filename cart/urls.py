@@ -15,7 +15,7 @@ urlpatterns = [
     path('', cart_get_or_create, name='cart-get-create'), 
     # path('cart/list/', cart_list, name='cart-list'), 
     
-    path('items', cart_item_create, name='cart-add'),
+    path('items/', cart_item_create, name='cart-add'),
     path('items/<int:pk>', cart_item_delete, name='cart-item-delete'),
     path('items/bulk', cart_item_bulk_add, name='cart-item-bulk-add'),
     
