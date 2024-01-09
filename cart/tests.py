@@ -15,19 +15,21 @@ class CartAPITest(APITestCase):
         response = self.client.get('/api/cart/')
         expected_prefix = 'G'
         cart_id = response.data.get('cart_id', '')
-        self.assertTrue(expected_prefix,cart_id[0])
+        self.assertTrue(cart_id and len(cart_id) > 0, "Cart ID is not present or empty")
+        self.assertEqual(expected_prefix, cart_id[0], "Cart ID does not start with 'G'")
 
     def test_logged_in_user_cart_creation(self):
         self.client.force_login(self.user)
         response = self.client.get('/api/cart/')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
-    def test_logged_in_user_cart_creation(self):
+    def test_logged_in_user_cart_id_format(self):
         self.client.force_login(self.user)
         response = self.client.get('/api/cart/')
         expected_prefix = 'U'
         cart_id = response.data.get('cart_id', '')
-        self.assertTrue(expected_prefix,cart_id[0])
+        self.assertTrue(cart_id and len(cart_id) > 0, "Cart ID is not present or empty")
+        self.assertEqual(expected_prefix, cart_id[0], "Cart ID does not start with 'U'")
         
     def test_logged_in_user_existing_cart(self):
         self.client.force_login(self.user)
