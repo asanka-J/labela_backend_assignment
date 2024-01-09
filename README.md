@@ -11,6 +11,11 @@ Backend solution for a company specialised in car parts wants to modernise their
 - git clone https://github.com/asanka-J/labela_backend_assignment.git
 - cd labela_backend_assignment
 
+*Copy the sample env config to .env file*
+
+- cp env_sample .env
+
+
 *Build and Run Docker Compose*
 
 - sudo docker-compose up -d --build
