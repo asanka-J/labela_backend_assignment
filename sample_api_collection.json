@@ -60,10 +60,16 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"demo@123\"\n   \n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -126,8 +132,17 @@
 		{
 			"name": "Product- create",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"name\": \"Product 5\",\n    \"description\": \"Product 5 Description\",\n    \"price\": 300.00,\n    \"quantity\": 20\n}",
@@ -154,7 +169,13 @@
 			"name": "Product- update",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "token {{token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"name\":\"Product 2 updated name\",\n    \"description\":\"Product 2 updated description\",\n    \"quantity\": 200,\n    \"price\": 400\n\n}",
